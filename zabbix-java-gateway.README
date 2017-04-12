@@ -1,0 +1,41 @@
+一、为了连接到zabbix-java-gateway，需要重新配置proxy
+主要需要加入如下参数
+ZBX_JAVAGATEWAY_ENABLE=true
+ZBX_JAVAGATEWAY=172.17.230.52（zabbix-java-gateway地址）
+ZBX_JAVAGATEWAYPORT=10052
+ZBX_STARTJAVAPOLLERS=5
+
+重新配置proxy：
+docker stop hd-zabbix-proxy-mysql
+docker rm   hd-zabbix-proxy-mysql
+
+docker run --name hd-zabbix-proxy-mysql  -v /etc/localtime:/etc/localtime -p 10051:10051 --link mysql5717:MYSQL -e DB_SERVER_HOST="MYSQL" -e MYSQL_USER="zabbix" -e MYSQL_PASSWORD="*" -e ZBX_HOSTNAME=proxy_zj** -e ZBX_SERVER_HOST=120.*.*.* -e ZBX_JAVAGATEWAY_ENABLE=true -e ZBX_JAVAGATEWAY=172.17.230.52 -e ZBX_JAVAGATEWAYPORT=10052 -e ZBX_STARTJAVAPOLLERS=5 -d  --restart=unless-stopped zabbix/zabbix-proxy-mysql:ubuntu-3.0.4 
+
+docker stop    hd-zabbix-proxy-mysql
+docker start   hd-zabbix-proxy-mysql
+docker logs -f hd-zabbix-proxy-mysql
+
+
+
+
+
+二、配置zabbix-java-gateway
+https://hub.docker.com/r/zabbix/zabbix-java-gateway/
+# 下载
+docker pull zabbix/zabbix-gateway:ubuntu-3.0.4
+
+# 链接到proxy
+docker stop hd-zabbix-java-gateway
+docker rm   hd-zabbix-java-gateway
+
+docker run --name hd-zabbix-java-gateway -v /etc/timezone:/etc/timezone  -v /etc/localtime:/etc/localtime -p 10052:10052 --link hd-zabbix-proxy-mysql:zabbix-server -d --restart=unless-stopped -e ZBX_START_POLLERS=5 -e ZBX_DEBUGLEVEL=debug zabbix/zabbix-java-gateway:ubuntu-3.0.4
+
+docker logs -f hd-zabbix-java-gateway |grep -i tomcat 
+
+docker stop    hd-zabbix-java-gateway
+docker start   hd-zabbix-java-gateway 
+docker logs -f hd-zabbix-java-gateway 
+
+调试时 ZBX_DEBUGLEVEL=debug  其默认值为 info 
+
+# docker exec -it hd-zabbix-java-gateway /bin/bash 

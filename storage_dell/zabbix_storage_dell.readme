@@ -1,0 +1,38 @@
+存储开启snmp服务，设定只读团体名默认public
+在linux主机上测试读取存储内容示例：
+snmpget -v 2c -c public 192.168.0.77 .1.3.6.1.4.1.674.11000.2000.500.1.2.1.0
+
+管理信息库(MIB)
+对象标识符(OID)
+
+https://marketing.dell.com/cn/contact-dell-solution-browse
+咨询DELL：我要用 zabbix3.0 监控 Dell Storage SCv2020 ，需要存储对应的 mib 文件和 oid 说明文件，请发我一份，谢谢！
+
+http://www.dell.com/support/home/cn/zh/cndhs1/Drivers/DriversDetails?driverId=1RGMV&fileId=3486622983&osCode=NAA&productCode=storage-sc2020&languageCode=cs&categoryId=SM
+官方文件:MIB2014.01.29.zip,包含:DELL-STORAGE-SC-MIB.mib
+http://www.oidview.com/mibs/0/SNMPv2-MIB.html
+官方文件:SNMPv2-MIB.zip,包含:SNMPv2-MIB.mib
+
+将其拷贝到zabbix_server或zabbix_proxy：
+/var/lib/zabbix/mibs/DELL-STORAGE-SC-MIB.mib
+/var/lib/zabbix/mibs/SNMPv2-MIB.mib
+
+Compellent SC
+https://share.zabbix.com/storage-devices/dell/compellent-sc
+下载 storage_dell_compellent_zabbix_2.4.8.zip
+
+1、 安装 echo.something 
+根据 zabbix_server.conf 或 zabbix_proxy.conf 配置文件里指定的 外部检查 路径，安装 echo.something
+如安装到 /usr/lib/zabbix/externalscripts/echo.something
+并赋予执行权限
+
+2、 手工添加 值映射 
+
+3、 导入模板
+
+添加监控主机、链接模板
+完成。
+
+备用类似链接
+https://github.com/jjmartres/Zabbix/tree/master/zbx-templates/zbx-dell-compellent
+http://qicheng0211.blog.51cto.com/3958621/1743506

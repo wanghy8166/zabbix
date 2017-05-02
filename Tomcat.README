@@ -1,0 +1,25 @@
+配置 JMX 监控
+https://www.zabbix.com/documentation/3.0/manual/config/items/itemtypes/jmx_monitoring
+
+cp catalina.sh catalina.sh-`date +%Y%m%d-%H%M%S`
+grep -in CATALINA_OPTS catalina.sh
+vim catalina.sh
+在第2行添加
+CATALINA_OPTS="${CATALINA_OPTS} -Djava.rmi.server.hostname=172.17.230.52"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.port=12345"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote=true"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.ssl=false"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.authenticate=false"
+
+如果tomcat启动时如果没有日志，调试它
+sh catalina.sh run
+根据报错，做相应处理
+
+重启java应用
+sh shutdown.sh
+sh startup.sh
+
+测试jmx通信
+java -jar cmdline-jmxclient-0.10.3.jar - 172.17.230.52:12345 java.lang:type=Memory NonHeapMemoryUsage
+
+在zabbix-server上注册主机 

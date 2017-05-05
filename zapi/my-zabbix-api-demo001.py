@@ -151,4 +151,4 @@ if __name__ == "__main__":
     for i in d:
         print i[0],'出现了',i[1],'次。'
         cnt=cnt+i[1]
-    print '合计：',cnt,'次。' 
+    print '合计：',cnt,'次。'

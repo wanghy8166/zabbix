@@ -1,0 +1,50 @@
+aix操作系统查询
+#df -g 
+#oslevel -s
+6100-07-10-1415
+#bootinfo -y
+64
+
+mkdir -p /home/guest/test
+cd /home/guest/test
+
+用 en_Serv-U FTP Server.rar.bak 搭建 ftp 服务器
+ftp 172.17.4.197
+aix 用户
+aix 密码
+bin 模式下载
+get gettext-0.19.8-1.aix6.1.ppc.rpm
+get libiconv-1.14-22.aix6.1.ppc.rpm
+get zabbix-agent-3.0.7-1.aix6.1.ppc.rpm
+quit 
+下载到 /home/guest/test 目录
+
+cp /usr/lib/libiconv.a /usr/lib/libiconv.a.old  
+cp /opt/freeware/lib/libintl.a  /opt/freeware/lib/libintl.a.old 
+cp /usr/lib/libintl.a  /usr/lib/libintl.a.old 
+
+安装前 rpm -qlp *.rpm 检查是否有文件覆盖冲突，如有则先备份
+
+rpm -ivh gettext-0.19.8-1.aix6.1.ppc.rpm --nodeps 
+rpm -ivh libiconv-1.14-22.aix6.1.ppc.rpm 
+rpm -ivh zabbix-agent-3.0.7-1.aix6.1.ppc.rpm 
+
+export vfile=/opt/freeware/etc/zabbix_agentd.conf
+echo 'LogFile=/tmp/zabbix_agentd.log' > $vfile
+echo 'Server=172.17.230.52' >> $vfile
+echo 'ServerActive=172.17.230.52' >> $vfile
+echo 'Hostname=test' >> $vfile
+echo 'AllowRoot=1' >> $vfile
+cat $vfile
+
+/opt/freeware/sbin/zabbix_agentd
+
+tail -f /tmp/zabbix_agentd.log
+
+aix加入启动项
+touch /etc/rc.local
+chmod +x /etc/rc.local
+echo '/opt/freeware/sbin/zabbix_agentd' >> /etc/rc.local
+cat /etc/rc.local
+ls -al /etc/rc.local
+

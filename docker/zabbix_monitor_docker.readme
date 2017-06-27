@@ -15,8 +15,8 @@ cat /etc/sudoers.d/zabbix
 
 #用agent监控docker的脚本
 cd /usr/local/zabbix_agents/bin/
-wget https://raw.githubusercontent.com/wanghy8166/nginx/master/docker_low_discovery.sh
-wget https://raw.githubusercontent.com/wanghy8166/nginx/master/docker_monitor.py
+wget https://raw.githubusercontent.com/wanghy8166/zabbix/master/docker/docker_low_discovery.sh
+wget https://raw.githubusercontent.com/wanghy8166/zabbix/master/docker/docker_monitor.py
 chown zabbix.zabbix docker*
 chmod 755 docker*
 #脚本测试

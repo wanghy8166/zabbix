@@ -1,0 +1,37 @@
+#配置agent
+mkdir -p /etc/zabbix/zabbix_agentd.conf.d/
+echo 'UserParameter=docker_low_discovery[*],/bin/bash /usr/local/zabbix_agents/bin/docker_low_discovery.sh $1' > /etc/zabbix/zabbix_agentd.conf.d/userparameter_docker.conf
+echo 'UserParameter=docker_stats[*],/usr/bin/python /usr/local/zabbix_agents/bin/docker_monitor.py $1 $2' >> /etc/zabbix/zabbix_agentd.conf.d/userparameter_docker.conf
+cat /etc/zabbix/zabbix_agentd.conf.d/userparameter_docker.conf
+
+echo 'AllowRoot=1' >> /usr/local/etc/zabbix_agentd.conf
+echo 'Include=/etc/zabbix/zabbix_agentd.conf.d/' >> /usr/local/etc/zabbix_agentd.conf 
+echo 'UnsafeUserParameters=1' >> /usr/local/etc/zabbix_agentd.conf 
+echo 'Timeout=30' >> /usr/local/etc/zabbix_agentd.conf 
+cat /usr/local/etc/zabbix_agentd.conf
+
+echo 'zabbix ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/zabbix
+cat /etc/sudoers.d/zabbix
+
+#用agent监控docker的脚本
+cd /usr/local/zabbix_agents/bin/
+wget https://raw.githubusercontent.com/wanghy8166/nginx/master/docker_low_discovery.sh
+wget https://raw.githubusercontent.com/wanghy8166/nginx/master/docker_monitor.py
+chown zabbix.zabbix docker*
+chmod 755 docker*
+#脚本测试
+/bin/bash /usr/local/zabbix_agents/bin/docker_low_discovery.sh docker
+/usr/bin/python /usr/local/zabbix_agents/bin/docker_monitor.py orabbix network_tx_bytes
+
+#重启agent
+pkill zabbix_agentd 
+ps -ef|grep -i zabbix_agentd
+/usr/local/zabbix_agents/sbin/zabbix_agentd
+#zabbix_get获取数据测试
+cd /usr/local/zabbix_agents/bin/
+./zabbix_get -s 192.168.0.84 -k"docker_low_discovery[docker]"
+./zabbix_get -s 192.168.0.84 -k"docker_stats[orabbix,network_tx_bytes]"
+
+参考：
+http://xianglinhu.blog.51cto.com/5787032/1697427
+http://dl528888.blog.51cto.com/2382721/1660844

@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
-from docker import Client
+from docker import APIClient
 import sys
 import subprocess
 import os
  
-global null  
-null=''
-
 def check_container_stats(container_name,collect_item):
     container_collect=docker_client.stats(container_name)
     old_result=eval(container_collect.next())
@@ -38,7 +35,7 @@ def check_container_stats(container_name,collect_item):
         result=os.popen(network_check_command).read().split()[1]
     return result
 if __name__ == "__main__":
-    docker_client = Client(base_url='unix://var/run/docker.sock')
+    docker_client = APIClient(base_url='unix://var/run/docker.sock')
     container_name=sys.argv[1]
     collect_item=sys.argv[2]
     print check_container_stats(container_name,collect_item)

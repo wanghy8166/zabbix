@@ -1,7 +1,7 @@
 #!/bin/bash
 #Fucation:docker low-level discovery
 docker() {
-            port=($(sudo docker ps -a|grep -v "CONTAINER ID"|awk '{print $NF}'))
+            port=($(sudo docker ps -a|grep -v "CONTAINER ID"|grep -v "_bak"|awk '{print $NF}'))
             printf '{\n'
             printf '\t"data":[\n'
                for key in ${!port[@]}
